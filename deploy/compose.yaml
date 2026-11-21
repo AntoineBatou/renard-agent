@@ -1,0 +1,18 @@
+# Hermes Agent — conteneur sur un VPS (à copier dans /srv/hermes/compose.yaml)
+# Doc officielle : https://hermes-agent.nousresearch.com/docs/user-guide/docker
+services:
+  hermes:
+    # Image officielle, figée par son empreinte (digest) : une nouvelle version ne sera jamais prise sans nous.
+    # Pour mettre à jour : sauvegarde, pull du nouveau digest, up -d, vérifications.
+    image: nousresearch/hermes-agent:stable@sha256:e6d81ae52ebf6a43efa529701405509f20054ba818f179ddd748bed4f8af584c  # stable relevé le 2026-11-05
+    # Version précédente (pour revenir en arrière) : sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d (stable du 2026-10-23)
+    container_name: hermes                    # un nom fixe plutôt qu'un nom aléatoire
+    restart: unless-stopped                   # redémarre seul (crash, reboot de 03:00) sauf si on l'arrête nous-mêmes
+    command: gateway run                      # mode « passerelle » : Hermes tourne en continu et écoute Telegram
+    volumes:
+      - /srv/hermes/data:/opt/data            # sa mémoire, sa config et ses clés vivent ici, hors du conteneur
+    mem_limit: 1536m                          # plafond de RAM : 1,5 Go max, il en reste pour le système
+    security_opt:
+      - no-new-privileges:true                # interdit à tout programme du conteneur de regagner des droits
+    # Pas de « ports: » : Hermes appelle Telegram et OpenRouter, personne ne l'appelle.
+    # (Docker contourne ufw : un port publié ici serait ouvert au monde.)

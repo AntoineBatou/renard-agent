@@ -1,0 +1,13 @@
+# /etc/cron.d/veille-emploi — host side (server clock in UTC: 04:30 UTC = 05:30 Paris in winter)
+SHELL=/bin/sh
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+30 4 * * * root /usr/local/sbin/veille-emploi.sh
+
+# Hermes side (run inside the agent's container):
+# Morning triage: the script's stdout is injected into the prompt, the answer goes to Telegram.
+#   hermes cron create "0 8 * * *" "Apply /opt/data/emploi/consigne.md to today's postings above." \
+#     --name veille-emploi --script preparer_analyse.py --deliver telegram \
+#     --timezone Europe/Paris --workdir /opt/data/cv --reasoning-effort high
+# Market alerts (illustrative command): the LLM is woken up only when the monitor output changes.
+#   hermes cron create "*/15 * * * *" "Explain the alert above in two lines." \
+#     --name alertes-marche --monitor-script alertes_marche.py --deliver telegram
