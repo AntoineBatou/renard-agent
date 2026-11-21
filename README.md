@@ -15,6 +15,14 @@ and cost choices described below.
 
 Code comments are in French.
 
+## About this repository
+
+This is a **cleaned public snapshot** of the private repository I work in, which is why it starts with a
+single commit. The private history is not published because it also holds server configuration,
+personal notes and the agent's private instructions. The agent has been running since October 2026;
+the job-watch pipeline described here went into daily use in November 2026. Changes to these scripts
+are published here as they are made.
+
 ## Architecture
 
 ```
